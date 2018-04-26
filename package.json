@@ -1,5 +1,5 @@
 {
-  "name": "sl-vue-tree",
+  "name": "vue-tree-panel",
   "version": "1.3.7",
   "description": "draggable tree vue component",
   "main": "dist/sl-vue-tree.js",

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>sl-vue-tree</title>
+    <link rel="stylesheet" href="../src/sl-vue-tree-light.css">
+    <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="../dist/sl-vue-tree.js"></script>
+</head>
+<body>
+
+<div id="app" @click="contextMenuIsVisible = false">
+
+    <div class="row">
+        <div class="tree-container">
+            <sl-vue-tree
+                    v-model="nodes"
+                    ref="slVueTree"
+                    @select="nodeSelected"
+                    @drop="nodeDropped"
+                    @toggle="nodeToggled"
+                    @nodeContextmenu="showContextMenu"
+                    @dragleave="dragLeave"
+            >
+
+                <template slot="title" slot-scope="{ node }">
+          <span class="item-icon">
+            <i class="fa fa-file" v-if="node.isLeaf"></i>
+            <i class="fa fa-folder" v-if="!node.isLeaf"></i>
+          </span>
+
+                    {{ node.title }}
+                </template>
+
+
+                <template slot="toggle" slot-scope="{ node }">
+          <span v-if="!node.isLeaf">
+            <i v-if="node.isExpanded" class="fa fa-chevron-down"></i>
+            <i v-if="!node.isExpanded" class="fa fa-chevron-right"></i>
+          </span>
+                </template>
+
+
+                <template slot="sidebar" slot-scope="{ node }">
+          <span class="visible-icon" @click="event => toggleVisibility(event, node)">
+            <i v-if="!node.data || node.data.visible !== false" class="fa fa-eye"></i>
+            <i v-if="node.data && node.data.visible === false" class="fa fa-eye-slash"></i>
+          </span>
+                </template>
+
+            </sl-vue-tree>
+        </div>
+
+        <div class="contextmenu" ref="contextmenu" v-show="contextMenuIsVisible">
+            <div @click="removeNode">Remove</div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+
+    var nodes = [
+        {
+            title: 'Layers', isExpanded: false, children: [
+                {title: 'test layer', isLeaf: true},
+                {
+                    title: 'Basemaps', isExpanded: false, children: [
+                        {title: 'Google', isLeaf: true},
+                        {title: 'Digital Globe', isLeaf: true}
+                    ]
+                },
+                {
+                    title: 'SpaceView', isExpanded: false, children: [
+                        {title: 'Google Hybrid', isLeaf: true},
+                        {title: 'Digital Globe Satellite', isLeaf: true}
+                    ]
+                },
+                {
+                    title: 'Ramani Layers', isExpanded: false, children: [
+                        {title: 'Ramani Aerial', isLeaf: true},
+                        {title: 'Ramani Map', isLeaf: true}
+                    ]
+                },
+                {
+                    title: 'Dwa Layers', isExpanded: false, children: [
+                        {title: 'Dwa Aerial', isLeaf: true},
+                        {title: 'Dwa Map', isLeaf: true}
+                    ]
+                },
+            ]
+        }
+
+    ];
+
+    new Vue({
+        el: '#app',
+        components: {SlVueTree},
+        data: function () {
+            return {
+                nodes: nodes,
+                contextMenuIsVisible: false,
+                lastEvent: 'No last event'
+            }
+        },
+        methods: {
+
+            toggleVisibility: function (event, node) {
+                const slVueTree = this.$refs.slVueTree;
+                event.stopPropagation();
+                const visible = !node.data || node.data.visible !== false;
+                slVueTree.updateNode(node, {data: {visible: !visible}});
+                this.lastEvent = `Node ${node.title} is ${ visible ? 'visible' : 'invisible'} now`;
+            },
+
+            nodeSelected(nodes, event) {
+                this.lastEvent = `Select nodes: ${nodes.map(node => node.title).join(', ')}`;
+            },
+
+            nodeToggled(node, event) {
+                this.lastEvent = `Node ${node.title} is ${ node.isExpanded ? 'expanded' : 'collapsed'}`;
+            },
+
+            nodeDropped(nodes, position, event) {
+                this.lastEvent = `Nodes: ${nodes.map(node => node.title).join(', ')} are dropped ${position.placement} ${position.node.title}`;
+            },
+
+            showContextMenu(node, event) {
+                event.preventDefault();
+                this.contextMenuIsVisible = true;
+                const $contextMenu = this.$refs.contextmenu;
+                $contextMenu.style.left = event.clientX + 'px';
+                $contextMenu.style.top = event.clientY + 'px';
+            },
+
+            removeNode() {
+                this.contextMenuIsVisible = false;
+                const $slVueTree = this.$refs.slVueTree;
+                $slVueTree.traverse((nodeModel, node, nodeModels) => {
+                    if (!node.isSelected) return;
+                    nodeModels.splice(node.ind, 1);
+                });
+            },
+
+            dragLeave(node, direction, event) {
+                console.log('dragleave', direction, event);
+            }
+        }
+    })
+</script>
+
+<style>
+
+    body {
+        font-family: Arial,serif;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+</style>
+
+</body>
+</html>
