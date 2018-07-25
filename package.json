@@ -5,6 +5,7 @@
   "main": "dist/sl-vue-tree.js",
   "types": "dist/sl-vue-tree.d.ts",
   "scripts": {
+    "clear": "rm -rf dist",
     "build": "webpack-cli --progress --mode production",
     "start": "webpack-cli --watch --progress --mode development",
     "test": "echo \"Error: no test specified\" && exit 1"
