@@ -77,5 +77,5 @@
 }
 
 .sl-vue-tree-title {
-    width: 75%;
+    flex: 1 1 auto;
 }
