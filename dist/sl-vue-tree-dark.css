@@ -73,3 +73,6 @@
     margin-left: 20px;
     padding: 5px 10px;
 }
+.sl-vue-tree-title {
+    flex: 1 1 auto;
+}
