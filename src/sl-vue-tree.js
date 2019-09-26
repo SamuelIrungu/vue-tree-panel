@@ -219,12 +219,18 @@ export default {
       this.getRoot().$emit('toggle', toggledNode, event);
     },
 
-    emitNodeClick(node, event) {
+    emitNodeClick(node, event, expand = true) {
       this.getRoot().$emit('nodeclick', node, event);
+      if (expand) {
+        this.updateNode(node.path, {isExpanded: !node.isExpanded});
+      }
     },
 
-    emitNodeDblclick(node, event) {
+    emitNodeDblclick(node, event, expand) {
       this.getRoot().$emit('nodedblclick', node, event);
+      if (expand) {
+        this.updateNode(node.path, {isExpanded: !node.isExpanded});
+      }
     },
 
     emitNodeContextmenu(node, event) {
