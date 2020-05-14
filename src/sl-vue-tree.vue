@@ -48,7 +48,7 @@
             'sl-vue-tree-node-is-folder' : !node.isLeaf
           }"
         >
-          <slot name="node-item" class="absolute-full"></slot>
+          <slot name="node-item" style="right: 0;left: 0" :node="node"></slot>
 
           <div class="sl-vue-tree-gap" v-for="gapInd in gaps"></div>
 
