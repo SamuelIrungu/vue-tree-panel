@@ -48,8 +48,6 @@
             'sl-vue-tree-node-is-folder' : !node.isLeaf
           }"
         >
-          <slot name="node-item" :node="node"></slot>
-
           <div class="sl-vue-tree-gap" v-for="gapInd in gaps"></div>
 
           <div class="sl-vue-tree-branch" v-if="level && showBranches">
